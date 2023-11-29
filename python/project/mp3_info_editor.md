@@ -38,11 +38,11 @@ album = ''
 
 -`editor_GUI.py`
 ```python
-from tkinter import *
-from tkinter import filedialog
+from tkinter import Tk, Text, Entry, Button, LabelFrame, DoubleVar, END
+from tkinter.filedialog import askopenfilename
+from tkinter.ttk import Progressbar
+from tkinter.messagebox import showerror, showinfo
 from mutagen.id3 import ID3, USLT, TPE1, TPE2, TALB
-import tkinter.ttk as ttk
-import tkinter.messagebox as msgbox
 import time
 
 root = Tk()
@@ -52,26 +52,27 @@ root.resizable(0,0)
 file_path = None
 
 def info_editor(file_path, lyrics, artist, performer, album):
-    # ID3 태그 로드 (load ID3 tag)
+    # ID3 태그 로드
     audio = ID3(file_path)
     
-    #가사 변경 (edit lyrics)
+    #가사 변경
     audio.add(USLT(encoding=3, lang='kor', desc='', text=lyrics))
     
-    # 앨범 아티스트 변경 (edit artist)
+    # 앨범 아티스트 변경
     audio["TPE2"] = TPE2(encoding=3, text=artist)
 
-    # 참여 아티스트 변경 (edit performer)
+    # 참여 아티스트 변경
     audio["TPE1"] = TPE1(encoding=3, text=performer)
 
-    # 앨범 변경 (edit album)
+    # 앨범 변경
     audio["TALB"] = TALB(encoding=3, text=album)  
 
-    audio.save(
+    audio.save()
+
 
 def open_file():
     global file_path
-    file_path = filedialog.askopenfilename(filetypes=[("MP3 Files", "*.mp3")]) # 파일 선택 대화 상자 열기
+    file_path = askopenfilename(filetypes=[("MP3 Files", "*.mp3")]) # 파일 선택 대화 상자 열기
     if file_path:  # 파일이 선택된 경우에만 실행
         file_name = file_path.split("/")[-1]
         e.delete(0,END)
@@ -79,15 +80,15 @@ def open_file():
 
 def edit():
     if file_path is None:
-        msgbox.showerror("ERROR", "Choose the music file")
+        showerror("ERROR", "Choose the music file")
 
     else:
         info_editor(file_path, lyrics.get("1.0", END), artist.get(), performer.get(), album.get())
         for i in range(1,101):
-            time.sleep(0.01)
+            time.sleep(0.0001)
             p_var.set(i)
             progressbar.update()
-        msgbox.showinfo("info","FINISH")
+        showinfo("info","FINISH")
 
 def dele():
     lyrics.delete("1.0", END)
@@ -142,7 +143,7 @@ progress_frame = LabelFrame(root, text="progress")
 progress_frame.pack()
 
 p_var = DoubleVar()
-progressbar = ttk.Progressbar(progress_frame, maximum=100, length="640", variable=p_var)
+progressbar = Progressbar(progress_frame, maximum=100, length="640", variable=p_var)
 progressbar.pack()
 
 #4.버튼
