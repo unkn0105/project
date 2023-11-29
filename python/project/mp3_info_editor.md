@@ -1,7 +1,7 @@
 # Get Started  
-
-## This are using mutagen, time, tkinter module.
-## You need to download mutagen module before run the code.
+---
+This are using mutagen, time, tkinter module.  
+You need to download mutagen module before run the code.
 ---
 -`editor.py`
 ```python
